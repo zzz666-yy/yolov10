@@ -1,0 +1,29 @@
+# Ultralytics YOLO 🚀, AGPL-3.0 license
+# ByteTrack with XYWH Kalman Filter tracker configuration file
+# 基于ByteTrack，使用XYWH状态的卡尔曼滤波器（从BoT-SORT引入）
+
+tracker_type: bytetrack_xywh  # 使用修改后的ByteTrack类名
+track_high_thresh: 0.5  # 高分数检测阈值，用于第一级关联
+track_low_thresh: 0.1   # 低分数检测阈值，用于第二级关联
+new_track_thresh: 0.6   # 新建轨迹的阈值
+track_buffer: 30        # 轨迹丢失后保留的帧数
+match_thresh: 0.8       # 匹配阈值（IoU距离）
+fuse_score: True        # 是否融合检测分数到距离矩阵
+
+# 卡尔曼滤波器参数（使用XYWH状态）
+kalman_filter:
+  type: KalmanFilterXYWH
+  std_weight_position: 0.05  # 位置标准差权重
+  std_weight_velocity: 0.00625  # 速度标准差权重
+
+# 轨迹管理参数
+max_removed_stracks: 1000  # 最大保留的已移除轨迹数
+duplicate_iou_thresh: 0.15  # 重复轨迹的IoU阈值
+# IOU 配置 - 在这里修改 IOU 类型
+iou:
+  type: "iou"        # 可选: iou, giou, diou, ciou, eiou, siou, focal_iou, alpha_iou, adaptive_iou
+  use_fast: false     # 是否使用快速计算（仅对标准 iou 有效）
+  params: {}          # 特定 IOU 的参数
+# 说明:
+# 本配置使用XYWH状态的卡尔曼滤波器，状态空间为(x,y,w,h,vx,vy,vw,vh)
+# 相比原版ByteTrack的XYAH状态，更适合目标宽高变化明显的场景

@@ -1,0 +1,60 @@
+# Ultralytics YOLO 🚀, AGPL-3.0 license
+# ByteTrack with GMC motion compensation tracker configuration file
+# 基于ByteTrack，加入GMC运动补偿模块
+
+tracker_type: bytetrack_gmc  # 使用带GMC的ByteTrack类名
+track_high_thresh: 0.5  # 高分数检测阈值
+track_low_thresh: 0.1   # 低分数检测阈值
+new_track_thresh: 0.6   # 新建轨迹阈值
+track_buffer: 30        # 轨迹缓存帧数
+match_thresh: 0.8       # 匹配阈值
+
+# GMC (Generalized Motion Compensation) 配置
+gmc:
+  enabled: True
+  gmc_method: sparseOptFlow  # 可选: 'orb', 'sift', 'ecc', 'sparseOptFlow', 'none'
+  downscale: 2           # 下采样因子，提高计算速度
+
+  # ORB方法专用参数
+  orb:
+    fast_threshold: 20
+    max_features: 1000
+
+  # SIFT方法专用参数
+  sift:
+    n_octave_layers: 3
+    contrast_threshold: 0.02
+    edge_threshold: 20
+
+  # ECC方法专用参数
+  ecc:
+    max_iterations: 5000
+    termination_eps: 1e-6
+    warp_mode: 0  # 0: MOTION_EUCLIDEAN, 1: MOTION_AFFINE, 2: MOTION_HOMOGRAPHY
+
+  # 稀疏光流方法专用参数
+  sparse_opt_flow:
+    max_corners: 1000
+    quality_level: 0.01
+    min_distance: 1
+    block_size: 3
+    use_harris_detector: False
+    k: 0.04
+
+# 卡尔曼滤波器参数（保持原XYAH状态）
+kalman_filter:
+  type: KalmanFilterXYAH
+  std_weight_position: 0.05
+  std_weight_velocity: 0.00625
+
+# 轨迹管理参数
+max_removed_stracks: 1000
+duplicate_iou_thresh: 0.15
+
+# 说明:
+# 本配置添加了GMC运动补偿，适用于相机运动场景（如无人机、手持拍摄）
+# GMC方法选择建议:
+# - sparseOptFlow: 平衡速度和精度（推荐）
+# - orb: 速度最快，适合实时应用
+# - sift: 精度最高，但计算慢
+# - ecc: 适合光照变化场景

@@ -1,0 +1,79 @@
+# Ultralytics YOLO 🚀, AGPL-3.0 license
+# ByteTrack with XYWH Kalman Filter and GMC motion compensation
+# 完整整合BoT-SORT的核心改进（不含ReID）
+
+tracker_type: bytetrack_xywh_gmc  # 使用完整改进的ByteTrack类名
+track_high_thresh: 0.5  # 高分数检测阈值
+track_low_thresh: 0.1   # 低分数检测阈值
+new_track_thresh: 0.6   # 新建轨迹阈值
+track_buffer: 30        # 轨迹缓存帧数
+match_thresh: 0.8       # 匹配阈值
+fuse_score: True        # 融合检测分数
+# IOU 配置 - 在这里修改 IOU 类型
+iou:
+  type: "iou"        # 可选: iou, giou, diou, ciou, eiou, siou, focal_iou, alpha_iou, adaptive_iou
+  use_fast: false     # 是否使用快速计算（仅对标准 iou 有效）
+  params: {}          # 特定 IOU 的参数
+# GMC运动补偿配置
+gmc:
+  enabled: True
+  method: ecc  # 可选: 'orb', 'sift', 'ecc', 'sparseOptFlow', 'none'
+  downscale: 2           # 下采样因子
+
+  # ORB配置
+  orb:
+    fast_threshold: 20
+    max_features: 1000
+
+  # SIFT配置
+  sift:
+    n_octave_layers: 3
+    contrast_threshold: 0.02
+    edge_threshold: 20
+
+  # ECC配置
+  ecc:
+    max_iterations: 5000
+    termination_eps: 1e-6
+    warp_mode: 0  # MOTION_EUCLIDEAN
+
+  # 稀疏光流配置
+  sparse_opt_flow:
+    max_corners: 1000
+    quality_level: 0.01
+    min_distance: 1
+    block_size: 3
+    use_harris_detector: False
+    k: 0.04
+
+# 卡尔曼滤波器参数（XYWH状态）
+kalman_filter:
+  type: KalmanFilterXYWH
+  std_weight_position: 0.05    # 位置标准差权重
+  std_weight_velocity: 0.00625 # 速度标准差权重
+
+  # 初始化协方差参数（可选覆盖）
+  init_covariance:
+    position_factor: 2.0       # 位置初始化协方差因子
+    velocity_factor: 10.0      # 速度初始化协方差因子
+
+# 轨迹管理参数
+max_removed_stracks: 1000
+duplicate_iou_thresh: 0.15
+
+# 匹配策略参数
+matching:
+  use_lap: True  # 使用LAP求解器进行线性分配
+  second_association_thresh: 0.5  # 第二级关联阈值
+  unconfirmed_thresh: 0.7         # 未确认轨迹关联阈值
+
+# 说明:
+# 本配置同时包含两个核心改进:
+# 1. XYWH卡尔曼滤波器 - 直接建模宽高，适应目标形变
+# 2. GMC运动补偿 - 补偿相机运动，提升动态场景稳定性
+#
+# 适用场景:
+# - 无人机航拍
+# - 手持摄像
+# - 运动目标跟踪
+# - 目标形变明显的场景

@@ -1,0 +1,34 @@
+# Ultralytics YOLO 🚀, AGPL-3.0 license
+# Default YOLO tracker settings for ByteTrack tracker https://github.com/ifzhang/ByteTrack
+# BYTETrack IOU 配置文件
+# 只需修改 type 字段即可切换 IOU 计算方式
+
+iou:
+  # IOU 类型选择
+  # ========== 推荐选项 ==========
+  # diou  : 距离 IoU，平衡性能和精度，适合大多数场景（推荐）
+  # ciou  : 完整 IoU，精度最高，适合需要高精度跟踪的场景
+  # iou   : 标准 IoU，速度最快，精度一般
+  # giou  : 广义 IoU，适合处理非重叠框
+  # eiou  : 增强 IoU，适合目标大小变化剧烈的场景
+  # siou  : 角度 IoU，适合旋转目标（如车辆）
+  # focal_iou : 焦点 IoU，适合困难样本多的场景
+  # alpha_iou : Alpha IoU，增强区分度
+  # adaptive_iou : 自适应 IoU，动态调整权重
+  # rotated_iou : 精确旋转框 IoU，需要安装 shapely
+  type: "iou"
+
+  # 是否使用快速计算（需要安装 numba，可提升2-5倍速度）
+  # 注意: 只有 iou 类型支持快速计算，其他类型自动使用标准计算
+  use_fast: False
+
+# 跟踪器基础参数（可选，保持默认即可）
+
+tracker_type: bytetrack # tracker type, ['botsort', 'bytetrack']
+track_high_thresh: 0.5 # threshold for the first association
+track_low_thresh: 0.1 # threshold for the second association
+new_track_thresh: 0.6 # threshold for init new track if the detection does not match any tracks
+track_buffer: 30 # buffer to calculate the time when to remove tracks
+match_thresh: 0.8 # threshold for matching tracks
+# min_box_area: 10  # threshold for min box areas(for tracker evaluation, not used for now)
+# mot20: False  # for tracker evaluation(not used for now)
